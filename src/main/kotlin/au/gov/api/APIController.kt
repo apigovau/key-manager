@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import javax.servlet.http.HttpServletRequest
+import java.util.Base64
 
 @RestController
 class APIController {
@@ -21,18 +23,29 @@ class APIController {
     @Autowired
     private lateinit var manager: RegistrationManager
 
+    private fun getAPIKeyFromRequest(request:HttpServletRequest):String{
+        // http://www.baeldung.com/get-user-in-spring-security
+        val raw = request.getHeader("authorization")
+        val apikey = String(Base64.getDecoder().decode(raw.removePrefix("Basic ")))
+        return apikey
+    }
+
+
     @GetMapping("/api/canWrite")
-    fun canWrite(@RequestParam key:String, @RequestParam space:String):Boolean{
+    fun canWrite(request:HttpServletRequest, @RequestParam space:String):Boolean{
+        val key = getAPIKeyFromRequest(request)
         return manager.canWrite(key, space)
     }
 
     @GetMapping("/api/spaces")
-    fun spaces(@RequestParam key:String):List<String>{
+    fun spaces(request:HttpServletRequest):List<String>{
+        val key = getAPIKeyFromRequest(request)
         return manager.spacesForKey(key)
     }
 
     @GetMapping("/api/new")
-    fun newRegistration(@RequestParam email:String, @RequestParam spaces:List<String>, @RequestParam key:String):String{
+    fun newRegistration(request:HttpServletRequest, @RequestParam email:String, @RequestParam spaces:List<String>):String{
+        val key = getAPIKeyFromRequest(request)
         if(manager.canWrite(key, "admin")){
             return manager.newRegistration(email, spaces).apiKey
         }
@@ -41,7 +54,8 @@ class APIController {
 
 
     @GetMapping("/api/changeSpaces")
-    fun changeSpaces(@RequestParam spaces:List<String>, @RequestParam email:String, @RequestParam key:String):String{
+    fun changeSpaces(request:HttpServletRequest, @RequestParam spaces:List<String>, @RequestParam email:String):String{
+        val key = getAPIKeyFromRequest(request)
         if(manager.canWrite(key, "admin")){
             manager.updateSpaces( email, spaces)
             return "OK"
