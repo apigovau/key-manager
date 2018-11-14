@@ -15,7 +15,7 @@ class Registration(val email:String, val spaces:List<String>, val hash:String){
     }
 
 
-    fun validForSpace(space:String) = space in spaces
+    fun validForSpace(space:String) = (space in spaces) || ("admin" in spaces)
 
     fun validForAPIKey(apiKey:String):Boolean{
         return BCrypt.checkpw(apiKey, hash)
