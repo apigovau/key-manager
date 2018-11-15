@@ -91,6 +91,26 @@ class RegistrationManager{
             }
         }
 
+        fun deleteRegistration(email:String):String{
+            val md5 = Registration.md5(email)
+            var state = "Ok"
+            var connection: Connection? = null
+            try {
+                connection = dataSource.connection
+                createTable(connection)
+                val deleteStatement = connection.prepareStatement("DELETE FROM registrations WHERE registration->>'emailHash' = ?;")
+                deleteStatement.setString(1, md5)
+                deleteStatement.execute()
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                state = e.message.toString()
+            } finally {
+                if (connection != null) connection.close()
+            }
+            return state
+        }
+
 
 
         fun getRegistration(md5:String):Registration {

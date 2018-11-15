@@ -52,6 +52,15 @@ class APIController {
         throw UnauthorisedToCreateKey()
     }
 
+    @GetMapping("/api/delete")
+    fun deleteRegistration(request:HttpServletRequest, @RequestParam email:String):String{
+        val key = getAPIKeyFromRequest(request)
+        if(manager.canWrite(key, "admin")){
+            return manager.deleteRegistration(email)
+        }
+        throw UnauthorisedToCreateKey()
+    }
+
 
     @GetMapping("/api/changeSpaces")
     fun changeSpaces(request:HttpServletRequest, @RequestParam spaces:List<String>, @RequestParam email:String):String{
