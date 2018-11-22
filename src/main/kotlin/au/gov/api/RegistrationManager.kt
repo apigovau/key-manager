@@ -27,10 +27,16 @@ class RegistrationManager{
         @Autowired
         private lateinit var dataSource: DataSource
 
+		constructor(){}
+
+		constructor(theDataSource:DataSource){
+			dataSource = theDataSource
+		}
 
         fun canWrite(apiKeyText:String, space:String):Boolean{
             val apiKey = APIKey(apiKeyText)
 			val registration = getRegistration(apiKey.emailHash)
+            if(registration == null) return false
             return registration.validForSpace(space) && registration.validForAPIKey(apiKey.key)
         }
 
@@ -38,6 +44,7 @@ class RegistrationManager{
 		fun spacesForKey(apiKey:String):List<String>{
 			val keyMD5 = apiKey.split(":")[0]
 			val registration = getRegistration(keyMD5)
+            if(registration == null) return listOf()
 			return registration.spaces
 		}
 
@@ -113,7 +120,7 @@ class RegistrationManager{
 
 
 
-        fun getRegistration(md5:String):Registration {
+        fun getRegistration(md5:String):Registration? {
             var connection: Connection? = null
             try {
                 connection = dataSource.connection
@@ -131,7 +138,7 @@ class RegistrationManager{
             } finally {
                 if (connection != null) connection.close()
             }
-			return Registration("",listOf(),"")
+			return null
         }
 
 

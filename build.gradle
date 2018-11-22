@@ -50,5 +50,6 @@ dependencies {
 	
 	compile group: 'org.mindrot', name: 'jbcrypt', version: '0.3m'
 
+    testCompile 'com.opentable.components:otj-pg-embedded:0.12.5'
 
 }

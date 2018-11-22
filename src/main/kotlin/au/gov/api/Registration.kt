@@ -23,6 +23,9 @@ class Registration(val email:String, val spaces:List<String>, val hash:String){
 
     fun toJSON() = Klaxon().toJsonString(this)
 
+
+    override fun toString() = "Registration(${email}):"
+
     companion object{
         fun parse(json:String):Registration{
             return Klaxon().parse<Registration>(json)!!
