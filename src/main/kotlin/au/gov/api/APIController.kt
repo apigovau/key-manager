@@ -46,7 +46,7 @@ class APIController {
     @GetMapping("/api/new")
     fun newRegistration(request:HttpServletRequest, @RequestParam email:String, @RequestParam spaces:List<String>):String{
         val key = getAPIKeyFromRequest(request)
-        if(manager.canWrite(key, "admin")){
+        if(manager.canWrite(key, "admin") || matchesHardcodedKey(key) ){
             return manager.newRegistration(email, spaces).apiKey
         }
         throw UnauthorisedToCreateKey()
@@ -75,5 +75,13 @@ class APIController {
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
     class UnauthorisedToCreateKey() : RuntimeException()
+
+
+    private fun matchesHardcodedKey(key:String):Boolean{
+        val hardcodedKey = System.getenv("B64HardcodedKey")
+        if(hardcodedKey == null) return false
+        if(hardcodedKey == "") return false
+        return key == hardcodedKey
+    }
 
 }
