@@ -46,7 +46,7 @@ class APIController {
     @GetMapping("/api/new")
     fun newRegistration(request:HttpServletRequest, @RequestParam email:String, @RequestParam spaces:List<String>):String{
         val key = getAPIKeyFromRequest(request)
-        if(manager.canWrite(key, "admin") || matchesHardcodedKey(key) ){
+        if(manager.canWrite(key, "admin") || matchesBootstrapCredentials(key) ){
             return manager.newRegistration(email, spaces).apiKey
         }
         throw UnauthorisedToCreateKey()
@@ -77,11 +77,11 @@ class APIController {
     class UnauthorisedToCreateKey() : RuntimeException()
 
 
-    private fun matchesHardcodedKey(key:String):Boolean{
-        val hardcodedKey = System.getenv("B64HardcodedKey")
-        if(hardcodedKey == null) return false
-        if(hardcodedKey == "") return false
-        return key == hardcodedKey
+    private fun matchesBootstrapCredentials(key:String):Boolean{
+        val bootstrapCredentials = System.getenv("BootstrapCredentials")
+        if(bootstrapCredentials == null) return false
+        if(bootstrapCredentials == "") return false
+        return key == bootstrapCredentials
     }
 
 }
