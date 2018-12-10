@@ -54,7 +54,15 @@ class RegistrationManager{
             stmt.executeUpdate("CREATE TABLE IF NOT EXISTS registrations(registration jsonb)")
         }
 
+        class RegistrationExistsException() : RuntimeException()
+
 		fun newRegistration(email:String, spaces:List<String>):APIKey{
+            println("About to make new registration") 
+            val existingRegistration = getRegistration(Registration.md5(email))
+            println(existingRegistration)
+            if(existingRegistration != null) throw RegistrationExistsException()
+
+
 			val registrationAndKey = Registration.new(email, spaces)
 			val apiKey = registrationAndKey.apiKey
 			val registration = registrationAndKey.registration

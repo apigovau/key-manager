@@ -28,8 +28,10 @@ class RegistrationTest{
 	}
 
 
+
 	@Test
 	fun is_key_valid_for_space(){
+        println("Some standard out")
 		val email = "a@test.gov.au"
 		val spaces = listOf("space1","space2")
 		val registraiton = Registration.new(email, spaces).registration
