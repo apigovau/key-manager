@@ -1,6 +1,9 @@
 
 package au.gov.api
 
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.Klaxon
+import com.beust.klaxon.Parser
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.slf4j.LoggerFactory
@@ -17,6 +20,9 @@ import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
 import java.util.Base64
 
+import khttp.get
+import khttp.structures.authorization.BasicAuthorization
+
 @RestController
 class APIController {
 
@@ -28,6 +34,26 @@ class APIController {
         val raw = request.getHeader("authorization")
         val apikey = String(Base64.getDecoder().decode(raw.removePrefix("Basic ")))
         return apikey
+    }
+
+    data class Event(var key:String = "", var action:String = "", var type:String = "", var name:String = "", var reason:String = "")
+
+    private fun logEvent(request:HttpServletRequest, action:String, type:String, name:String, reason:String) {
+        Thread(Runnable {
+            print("Logging Event...")
+            // http://www.baeldung.com/get-user-in-spring-security
+            val raw = request.getHeader("authorization")
+            val logURL = System.getenv("LogURI")+"new"
+            if (raw==null) throw RuntimeException()
+            val user = String(Base64.getDecoder().decode(raw.removePrefix("Basic "))).split(":")[0]
+            val parser: Parser = Parser()
+            var eventPayload: JsonObject = parser.parse(StringBuilder(Klaxon().toJsonString(Event(user,action,type,name,reason)))) as JsonObject
+            val eventAuth = System.getenv("LogAuthKey")
+            val eventAuthUser = eventAuth.split(":")[0]
+            val eventAuthPass = eventAuth.split(":")[1]
+            var x = khttp.post(logURL,auth=BasicAuthorization(eventAuthUser, eventAuthPass),json = eventPayload)
+            println("Done")
+        }).start()
     }
 
 
@@ -47,7 +73,14 @@ class APIController {
     fun newRegistration(request:HttpServletRequest, @RequestParam email:String, @RequestParam spaces:List<String>):String{
         val key = getAPIKeyFromRequest(request)
         if(manager.canWrite(key, "admin") || matchesBootstrapCredentials(key) ){
-            return manager.newRegistration(email, spaces).apiKey
+            val apikey =  manager.newRegistration(email, spaces).apiKey
+            try {
+                logEvent(request,"Created","Key",apikey,email)
+            }
+            catch (e:Exception)
+            { println(e.message)}
+
+            return apikey
         }
         throw UnauthorisedToCreateKey()
     }
@@ -56,7 +89,15 @@ class APIController {
     fun deleteRegistration(request:HttpServletRequest, @RequestParam email:String):String{
         val key = getAPIKeyFromRequest(request)
         if(manager.canWrite(key, "admin")){
-            return manager.deleteRegistration(email)
+            val state = manager.deleteRegistration(email)
+            if(state=="Ok"){
+                try {
+                    logEvent(request,"Deleted","Key",email,"No longer needed")
+                }
+                catch (e:Exception)
+                { println(e.message)}
+            }
+            return state
         }
         throw UnauthorisedToCreateKey()
     }
@@ -67,6 +108,12 @@ class APIController {
         val key = getAPIKeyFromRequest(request)
         if(manager.canWrite(key, "admin")){
             manager.updateSpaces( email, spaces)
+            try {
+                logEvent(request,"Updated","Key",email,"spaces")
+            }
+            catch (e:Exception)
+            { println(e.message)}
+
             return "OK"
         }
         throw UnauthorisedToCreateKey()
