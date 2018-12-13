@@ -52,4 +52,6 @@ dependencies {
 
     testCompile 'com.opentable.components:otj-pg-embedded:0.12.5'
 
+    compile 'khttp:khttp:0.1.0'
+
 }
