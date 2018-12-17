@@ -4,6 +4,7 @@ jobs:
     branches:
       only:
         - master
+        - develop
         - /rc-.*/
     docker:
       # specify the version you desire here
