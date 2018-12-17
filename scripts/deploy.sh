@@ -37,9 +37,9 @@ login() {
 main() {
   login
   if [[ "${CIRCLE_BRANCH}" = "master" ]]; then
-    cf push staging-api-gov-au-registration-manager -f manifest-stating.yml
+    cf push staging-api-gov-au-registration-manager -f manifest-staging.yml
   else
-    cf push staging-api-gov-au-registration-manager -f manifest-stating.yml
+    cf push staging-api-gov-au-registration-manager -f manifest-staging.yml
   fi
 }
 main $@
