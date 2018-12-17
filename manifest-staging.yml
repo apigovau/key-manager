@@ -1,13 +1,13 @@
 ---
 applications:
-- name: staging-api-gov-au-registration-manager
-  memory: 1G
+- name: api-gov-au-registration-manager
+  memory: 768M
+  disk_quota: 512M
   buildpack: java_buildpack
   env:
     SPRING_PROFILES_ACTIVE: prod
-    JAVA_OPTS: -Duser.timezone=Australia/Canberra
   path: build/libs/registration-manager-1.0.jar
   services:
-  - staging-api-gov-au-registration-manager
+  - api-gov-au-registration-manager-db
   routes:
-  - route: staging.api.gov.au/keys/producer/
+  - route: api-gov-au.apps.y.cld.gov.au/keys/producer/

@@ -1,11 +1,11 @@
 ---
 applications:
 - name: api-gov-au-registration-manager
-  memory: 1G
+  memory: 768M
+  disk_quota: 512M
   buildpack: java_buildpack
   env:
     SPRING_PROFILES_ACTIVE: prod
-    JAVA_OPTS: -Duser.timezone=Australia/Canberra
   path: build/libs/registration-manager-1.0.jar
   services:
   - api-gov-au-registration-manager-db
