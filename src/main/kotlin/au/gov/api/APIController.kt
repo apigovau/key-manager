@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
 import java.util.Base64
+import au.gov.api.config.*
 
 import khttp.get
 import khttp.structures.authorization.BasicAuthorization
@@ -43,7 +44,7 @@ class APIController {
             print("Logging Event...")
             // http://www.baeldung.com/get-user-in-spring-security
             val raw = request.getHeader("authorization")
-            val logURL = System.getenv("LogURI")+"new"
+            val logURL = Config.get("BaseRepoURI") + "new"
             if (raw==null) throw RuntimeException()
             val user = String(Base64.getDecoder().decode(raw.removePrefix("Basic "))).split(":")[0]
             val parser: Parser = Parser()
@@ -52,7 +53,7 @@ class APIController {
             val eventAuthUser = eventAuth.split(":")[0]
             val eventAuthPass = eventAuth.split(":")[1]
             var x = khttp.post(logURL,auth=BasicAuthorization(eventAuthUser, eventAuthPass),json = eventPayload)
-            println("Done")
+            println("Log: "+x.statusCode)
         }).start()
     }
 

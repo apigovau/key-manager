@@ -10,6 +10,12 @@ buildscript {
     }
 }
 
+allprojects {
+    repositories {
+        maven { url "https://jitpack.io" }
+    }
+}
+
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'kotlin'
@@ -54,4 +60,5 @@ dependencies {
 
     compile 'khttp:khttp:0.1.0'
 
+    compile 'com.github.apigovau:config:v1.0'
 }
