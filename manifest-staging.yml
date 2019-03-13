@@ -10,4 +10,4 @@ applications:
   services:
   - api-gov-au-registration-manager-db
   routes:
-  - route: api-gov-au.apps.y.cld.gov.au/keys/producer/
+  - route: staging.api.gov.au/keys/producer/
