@@ -1,6 +1,6 @@
 ---
 applications:
-- name: api-gov-au-registration-manager
+- name: staging-api-gov-au-registration-manager
   memory: 768M
   disk_quota: 512M
   buildpack: java_buildpack
