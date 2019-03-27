@@ -8,6 +8,6 @@ applications:
     SPRING_PROFILES_ACTIVE: prod
   path: build/libs/registration-manager-1.0.jar
   services:
-  - api-gov-au-registration-manager-db
+  - staging-api-gov-au-registration-manager
   routes:
   - route: staging.api.gov.au/keys/producer/
