@@ -1,5 +1,5 @@
 
-package au.gov.api
+package au.gov.api.registration
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon

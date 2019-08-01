@@ -1,4 +1,4 @@
-package au.gov.api
+package au.gov.api.registration
 
 import javax.sql.DataSource
 import java.sql.Connection

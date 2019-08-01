@@ -1,5 +1,5 @@
 
-package au.gov.api
+package au.gov.api.registration
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource

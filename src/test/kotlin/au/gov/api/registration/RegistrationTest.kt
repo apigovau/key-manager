@@ -1,4 +1,4 @@
-package au.gov.api
+package au.gov.api.registration
 
 import org.junit.Assert
 import org.junit.Test
