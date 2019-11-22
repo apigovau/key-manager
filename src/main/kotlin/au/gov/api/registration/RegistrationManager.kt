@@ -31,6 +31,13 @@ class RegistrationManager{
 			dataSource = theDataSource
 		}
 
+        fun isValidKey(apiKeyText:String):Boolean {
+            val apiKey = APIKey(apiKeyText)
+            val registration = getRegistration(apiKey.emailHash)
+            if(registration != null) return true
+            return false
+        }
+
         fun canWrite(apiKeyText:String, space:String):Boolean{
             val apiKey = APIKey(apiKeyText)
 			val registration = getRegistration(apiKey.emailHash)

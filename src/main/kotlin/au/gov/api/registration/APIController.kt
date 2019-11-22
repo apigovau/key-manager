@@ -64,6 +64,12 @@ class APIController {
         return manager.canWrite(key, space)
     }
 
+    @GetMapping("/api/checkKey")
+    fun isValid(request:HttpServletRequest):Boolean{
+        val key = getAPIKeyFromRequest(request)
+        return manager.isValidKey(key)
+    }
+
     @GetMapping("/api/spaces")
     fun spaces(request:HttpServletRequest):List<String>{
         val key = getAPIKeyFromRequest(request)
