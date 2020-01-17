@@ -34,11 +34,10 @@ class RegistrationManager {
     }
 
 
-    fun spacesForKey(apiKey: String): List<String> {
-        val keyMD5 = apiKey.split(":")[0]
-        val registration = getRegistration(keyMD5)
-
-        return if (registration != null && registration.validForAPIKey(apiKey.split(':')[1])) {
+    fun spacesForKey(apiKeyText: String): List<String> {
+        val apiKey = APIKey(apiKeyText)
+        val registration = getRegistration(apiKey.emailHash)
+        return if (registration != null && registration.validForAPIKey(apiKey.key)) {
             registration.spaces
         } else {
             listOf()
